@@ -90,7 +90,7 @@ def main():
         
     except Exception as e:
         workflow_error = e
-        print(f"\n⚠️  WORKFLOW ERROR: {type(e).__name__}: {e}")
+        print(f"\nWARNING: WORKFLOW ERROR: {type(e).__name__}: {e}")
         print("Attempting to save partial results...\n")
     
     finally:
@@ -126,23 +126,23 @@ def main():
             # Print summary
             print(f"\n{'='*60}")
             if workflow_error:
-                print(f"  ⚠️  PARTIAL OUTPUT SAVED (Workflow failed at: {type(workflow_error).__name__})")
+                print(f"  WARNING: PARTIAL OUTPUT SAVED (Workflow failed at: {type(workflow_error).__name__})")
             else:
-                print(f"  ✅ OUTPUT SAVED")
+                print(f"  OUTPUT SAVED")
             print("="*60)
-            print(f"   📄 Plain text: {output_file}")
-            print(f"   🌐 HTML: {html_output_file}")
+            print(f"   Plain text: {output_file}")
+            print(f"   HTML: {html_output_file}")
             if pdf_generated:
-                print(f"   📕 PDF: {pdf_output_file}")
+                print(f"   PDF: {pdf_output_file}")
             print("="*60 + "\n")
             
         except Exception as save_error:
-            print(f"\n❌ CRITICAL: Failed to save outputs: {save_error}")
+            print(f"\nCRITICAL: Failed to save outputs: {save_error}")
             raise
         
         # Re-raise workflow error after saving partial results
         if workflow_error:
-            print("\n⚠️  Workflow did not complete successfully.")
+            print("\nWARNING: Workflow did not complete successfully.")
             print("Partial results have been saved to output files.\n")
 
 

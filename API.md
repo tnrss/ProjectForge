@@ -487,11 +487,11 @@ Generates complete HTML document with embedded CSS and content sections.
    - Smooth animations
 
 3. **Color-Coded Badges**
-   - 🔵 BA: `#e3f2fd` / `#1565c0`
-   - 🟢 Architect: `#e8f5e9` / `#2e7d32`
-   - 🟠 QA: `#fff3e0` / `#e65100`
-   - 🟣 Synthesis: `#f3e5f5` / `#6a1b9a`
-   - 🟡 PM: `#fff9c4` / `#f57f17`
+   - BA: `#e3f2fd` / `#1565c0`
+   - Architect: `#e8f5e9` / `#2e7d32`
+   - QA: `#fff3e0` / `#e65100`
+   - Synthesis: `#f3e5f5` / `#6a1b9a`
+   - PM: `#fff9c4` / `#f57f17`
 
 4. **Typography**
    - System fonts (-apple-system, BlinkMacSystemFont, Segoe UI)
@@ -635,7 +635,7 @@ try:
     result = crew.kickoff()
 except Exception as e:
     workflow_error = e
-    print(f"⚠️  WORKFLOW ERROR: {type(e).__name__}: {e}")
+    print(f"WARNING: WORKFLOW ERROR: {type(e).__name__}: {e}")
 finally:
     # Save whatever completed
     outputs = extract_task_outputs_safe(tasks)
@@ -652,7 +652,7 @@ ba_output = outputs.get('intake') or "[Task did not complete]"
 ```python
 pdf_generated = save_pdf_output(pdf_file, html_content)
 if not pdf_generated:
-    print("⚠️  PDF generation skipped")
+    print("WARNING: PDF generation skipped")
 ```
 
 ---

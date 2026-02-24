@@ -2,7 +2,7 @@
 
 Thank you for considering contributing to ProjectForge! This document outlines the guidelines and best practices for contributing.
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Python 3.11 or higher
@@ -39,7 +39,7 @@ Thank you for considering contributing to ProjectForge! This document outlines t
    # Edit .env and add your GOOGLE_API_KEY
    ```
 
-## 📋 Code Standards
+## Code Standards
 
 ### Python Style Guide
 - Follow [PEP 8](https://pep8.org/) style guidelines
@@ -74,7 +74,7 @@ def function_name(param1: str, param2: int) -> bool:
 - **Constants:** `UPPER_SNAKE_CASE`
 - **Private methods:** `_leading_underscore`
 
-## 🔀 Branch Strategy
+## Branch Strategy
 
 ### Branch Naming
 - Feature: `feature/description-of-feature`
@@ -87,7 +87,7 @@ def function_name(param1: str, param2: int) -> bool:
 git checkout -b feature/add-openai-support
 ```
 
-## 📝 Commit Messages
+## Commit Messages
 
 ### Format
 ```
@@ -129,7 +129,7 @@ fix(exporters): handle missing weasyprint dependency gracefully
 Fixes #38
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Running Tests
 ```bash
@@ -165,15 +165,15 @@ def test_extract_task_outputs_by_role_success():
     assert outputs['intake'] is not None
 ```
 
-## 📦 Pull Request Process
+## Pull Request Process
 
 ### Before Submitting
-1. ✅ Code follows style guidelines
-2. ✅ All tests pass
-3. ✅ New tests added for new features
-4. ✅ Documentation updated
-5. ✅ Commit messages follow convention
-6. ✅ Branch is up to date with main
+1. Code follows style guidelines
+2. All tests pass
+3. New tests added for new features
+4. Documentation updated
+5. Commit messages follow convention
+6. Branch is up to date with main
 
 ### PR Template
 ```markdown
@@ -208,7 +208,7 @@ Closes #(issue number)
 3. Once approved, maintainer will merge
 4. Delete feature branch after merge
 
-## 🐛 Bug Reports
+## Bug Reports
 
 ### Before Submitting
 - Check existing issues for duplicates
@@ -245,7 +245,7 @@ Paste error traceback here
 Screenshots, logs, or other relevant info
 ```
 
-## 💡 Feature Requests
+## Feature Requests
 
 ### Feature Request Template
 ```markdown
@@ -262,7 +262,7 @@ Other approaches you've thought about
 Any other relevant information
 ```
 
-## 🎯 Priority Areas for Contribution
+## Priority Areas for Contribution
 
 ### High Priority
 - [ ] Unit test coverage for all modules
@@ -284,7 +284,7 @@ Any other relevant information
 - [ ] Performance benchmarking suite
 - [ ] Internationalization (i18n)
 
-## 📚 Documentation
+## Documentation
 
 ### Areas Needing Documentation
 - API reference improvements
@@ -299,7 +299,7 @@ Any other relevant information
 - Add diagrams where helpful
 - Keep updated with code changes
 
-## 🔒 Security
+## Security
 
 ### Reporting Security Issues
 **DO NOT** open public issues for security vulnerabilities.
@@ -317,18 +317,18 @@ Instead:
 - Keep dependencies updated
 - Follow principle of least privilege
 
-## 📄 License
+## License
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
 
-## 🙏 Recognition
+## Recognition
 
 Contributors will be added to:
 - README.md Contributors section
 - CHANGELOG.md for their contributions
 - GitHub contributors page
 
-## 📞 Questions?
+## Questions?
 
 - Open a Discussion on GitHub
 - Join our Discord server
@@ -336,4 +336,4 @@ Contributors will be added to:
 
 ---
 
-**Thank you for contributing to ProjectForge!** 🚀
+**Thank you for contributing to ProjectForge!**

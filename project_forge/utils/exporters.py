@@ -76,9 +76,9 @@ def save_pdf_output(pdf_output_file, html_content):
         HTML(string=html_content).write_pdf(pdf_output_file)
         return True
     except ImportError:
-        print("\n⚠️  PDF export not available. Install with:")
+        print("\nWARNING: PDF export not available. Install with:")
         print("   pip install weasyprint")
         return False
     except Exception as e:
-        print(f"\n⚠️  PDF generation failed: {e}")
+        print(f"\nWARNING: PDF generation failed: {e}")
         return False

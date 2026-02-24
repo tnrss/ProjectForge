@@ -6,7 +6,7 @@
 
 **ProjectForge** is an enterprise-grade AI business analysis tool that transforms rough project ideas into comprehensive, multi-format business plans using a 5-agent CrewAI workflow.
 
-## 🎯 What It Does
+## What It Does
 
 Takes a simple project description like:
 ```
@@ -20,13 +20,13 @@ And generates:
 - **Technical Synthesis** (1-page executive summary for non-technical stakeholders)
 - **Project Roadmap** (Sprint breakdown, success metrics, timelines)
 
-## 📊 Output Formats
+## Output Formats
 
 - **Plain Text** (`.txt`) - Easy to read and share
 - **HTML** (`.html`) - Interactive with collapsible sections and styled badges
 - **PDF** (`.pdf`) - Professional documents for presentations
 
-## 🏗️ Architecture
+## Architecture
 
 ### Multi-Agent Workflow
 
@@ -93,7 +93,7 @@ ABA Project/
 └── output_YYYYMMDD_HHMMSS.*     # Generated reports
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -155,14 +155,14 @@ Output files will be saved as:
 - `output_20260223_154523.html`
 - `output_20260223_154523.pdf`
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
-| `GOOGLE_API_KEY` | Your Google Gemini API key | None | ✅ Yes |
-| `LLM_MODEL` | LLM model identifier | `gemini/gemini-2.5-flash` | ❌ No |
+| `GOOGLE_API_KEY` | Your Google Gemini API key | None | Yes |
+| `LLM_MODEL` | LLM model identifier | `gemini/gemini-2.5-flash` | No |
 
 ### Supported LLM Models
 
@@ -179,7 +179,7 @@ LLM_MODEL=anthropic/claude-3-opus
 
 **Note:** Changing models requires updating the API key configuration in CrewAI.
 
-## 🏛️ Enterprise Features
+## Enterprise Features
 
 ### 1. Partial Failure Recovery
 
@@ -189,7 +189,7 @@ If an API call fails mid-workflow (HTTP 429 rate limit, timeout), ProjectForge s
 try:
     result = crew.kickoff()
 except Exception as e:
-    print(f"⚠️  WORKFLOW ERROR: {e}")
+    print(f"WARNING: WORKFLOW ERROR: {e}")
     # Still saves Tasks 1-3 even if Task 4 failed
 finally:
     save_partial_results()
@@ -197,9 +197,9 @@ finally:
 
 **Output example:**
 ```
-⚠️ PARTIAL OUTPUT SAVED (Workflow failed at: HTTPError)
-   📄 Plain text: output_20260223_154523.txt
-   🌐 HTML: output_20260223_154523.html
+WARNING: PARTIAL OUTPUT SAVED (Workflow failed at: HTTPError)
+   Plain text: output_20260223_154523.txt
+   HTML: output_20260223_154523.html
 ```
 
 ### 2. Safe Task Extraction (No Magic Numbers)
@@ -225,10 +225,10 @@ If a task fails, returns `None` instead of crashing.
 All configuration lives in environment variables, not code:
 
 ```python
-# ❌ Hardcoded (bad)
+# Hardcoded (bad)
 llm = LLM(model="gemini/gemini-2.5-flash")
 
-# ✅ Environment-driven (good)
+# Environment-driven (good)
 model_name = os.getenv("LLM_MODEL", "gemini/gemini-2.5-flash")
 llm = LLM(model=model_name)
 ```
@@ -253,7 +253,7 @@ QA Output (3000 tokens) ────────┘
 - Fewer hallucinations from excessive context
 - Lower API costs
 
-## 📦 Module Reference
+## Module Reference
 
 ### `main.py`
 **Purpose:** Orchestration layer and entry point
@@ -394,13 +394,13 @@ generate_html_template(
 - Table styling with zebra stripes
 
 **Badge Colors:**
-- 🔵 BA (Blue)
-- 🟢 Architect (Green)
-- 🟠 QA (Orange)
-- 🟣 Synthesis (Purple)
-- 🟡 PM (Yellow)
+- BA (Blue)
+- Architect (Green)
+- QA (Orange)
+- Synthesis (Purple)
+- PM (Yellow)
 
-## 🧪 Testing
+## Testing
 
 ### Manual Test
 
@@ -423,12 +423,12 @@ python main.py
 
 Should see:
 ```
-⚠️  WORKFLOW ERROR: ConnectionError: ...
+WARNING: WORKFLOW ERROR: ConnectionError: ...
 Attempting to save partial results...
-⚠️ PARTIAL OUTPUT SAVED
+WARNING: PARTIAL OUTPUT SAVED
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### PDF Generation Fails
 
@@ -476,7 +476,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## 📈 Performance
+## Performance
 
 **Typical Execution Time:**
 - Task 1 (BA): ~15-30s
@@ -491,18 +491,18 @@ pip install -r requirements.txt
 - Without synthesis: ~8,000-12,000 tokens
 - With synthesis: ~5,000-7,000 tokens (40% reduction)
 
-## 🔒 Security
+## Security
 
 - API keys stored in `.env` (excluded from git via `.gitignore`)
 - No user data stored or transmitted beyond LLM API calls
 - Output files saved locally only
 - HTTPS for all API communications
 
-## 📝 License
+## License
 
 MIT License - See LICENSE file for details
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -510,17 +510,17 @@ MIT License - See LICENSE file for details
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **CrewAI** - Multi-agent orchestration framework
 - **Google Gemini** - LLM provider
 - **WeasyPrint** - PDF generation
 - **Markdown Library** - Robust markdown parsing
 
-## 📞 Support
+## Support
 
 For issues, questions, or feature requests, please open an issue on GitHub.
 
 ---
 
-**Built with ❤️ using CrewAI and Google Gemini**
+**Built using CrewAI and Google Gemini**
