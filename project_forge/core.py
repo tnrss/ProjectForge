@@ -67,6 +67,7 @@ def run_analysis_workflow(
     
     workflow_error = None
     crew_result = None
+    tasks = []  # Initialize tasks to empty list
     
     try:
         # Initialize LLM
@@ -97,7 +98,7 @@ def run_analysis_workflow(
     
     finally:
         # Extract outputs (works even if workflow failed partway)
-        outputs = extract_task_outputs_safe(tasks)
+        outputs = extract_task_outputs_safe(tasks) if tasks else {}
         
         # Update result with extracted outputs
         result['outputs']['intake'] = outputs.get('intake') or "[Task did not complete]"
