@@ -38,7 +38,6 @@ st.markdown("""
         font-weight: bold;
         margin-top: 2rem;
         margin-bottom: 1rem;
-        color: #fafafa !important;
     }
     .status-success {
         color: #27ae60;
@@ -65,10 +64,7 @@ st.markdown("""
         max-width: 100%;
         overflow-x: auto;
     }
-    /* Fix h3 visibility in dark mode */
-    h3 {
-        color: #fafafa !important;
-    }
+    /* Remove forced h3 colors - let Streamlit's theme handle text colors naturally */
 </style>
 """, unsafe_allow_html=True)
 
