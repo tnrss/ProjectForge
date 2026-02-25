@@ -3,12 +3,13 @@
 from crewai import Task
 
 
-def create_tasks(user_input, agents):
+def create_tasks(user_input, agents, interactive_mode=False):
     """Create and return all tasks for the ProjectForge workflow.
     
     Args:
         user_input: The project description from the user
         agents: Tuple of (intake_specialist, tech_architect, quality_auditor, context_synthesizer, project_manager)
+        interactive_mode: Boolean to enable human-in-the-loop feedback for architect and QA tasks
         
     Returns:
         list: List of Task objects in execution order
@@ -25,7 +26,8 @@ def create_tasks(user_input, agents):
         description="Create the technical requirements (Schema, APIs) for the features identified.",
         expected_output="A technical brief with Database Schema, API Endpoints, and Integrations. Format the database schema using nested markdown bullet points. Format API endpoints using bold text and code blocks (```json) for payloads. Do not use markdown tables.",
         agent=tech_architect,
-        context=[task1]
+        context=[task1],
+        human_input=interactive_mode
     )
     
     task3 = Task(
@@ -33,7 +35,8 @@ def create_tasks(user_input, agents):
         Find 3 potential 'Edge Cases' or 'Risks' the Architect missed (e.g., Privacy, Offline Mode, Data Validation).""",
         expected_output="A 'Risk Assessment' report with 3 critical gaps and suggested fixes.",
         agent=quality_auditor,
-        context=[task2]
+        context=[task2],
+        human_input=interactive_mode
     )
     
     synthesis_task = Task(

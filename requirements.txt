@@ -16,5 +16,8 @@ markdown>=3.7
 # PDF Generation
 weasyprint>=63.0
 
+# Web UI
+streamlit>=1.31.0
+
 # Note: WeasyPrint requires system-level dependencies on macOS:
 # brew install pango gdk-pixbuf libffi

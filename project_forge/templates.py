@@ -141,6 +141,8 @@ def generate_html_template(timestamp, ba_html, architect_html, qa_html, synthesi
             margin: 15px 0;
             background: white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow-x: auto;
+            display: block;
         }}
         
         .section-content th {{

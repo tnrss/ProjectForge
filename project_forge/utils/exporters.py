@@ -1,6 +1,7 @@
 """Export utilities for converting and saving ProjectForge outputs."""
 
 from datetime import datetime
+from io import BytesIO
 import markdown
 
 
@@ -14,6 +15,65 @@ def convert_markdown_to_html(text):
         str: HTML-formatted string
     """
     return markdown.markdown(text, extensions=['tables', 'fenced_code'])
+
+
+def generate_text_content(timestamp, user_input, ba_output, architect_output, 
+                          qa_output, synthesis_output, pm_output):
+    """Generate text content in memory (returns string instead of writing file).
+    
+    Args:
+        timestamp: Timestamp string for the report
+        user_input: Original project description
+        ba_output: Business Analyst output
+        architect_output: Technical Architect output
+        qa_output: Quality Auditor output
+        synthesis_output: Technical Synthesizer output
+        pm_output: Project Manager output
+        
+    Returns:
+        str: Complete text content
+    """
+    content = f"ProjectForge Analysis\n"
+    content += f"Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}\n"
+    content += f"Project: {user_input}\n"
+    content += "=" * 80 + "\n\n"
+    
+    content += "## Business Requirements\n\n"
+    content += ba_output + "\n\n"
+    
+    content += "## Technical Design\n\n"
+    content += architect_output + "\n\n"
+    
+    content += "## Risk Assessment\n\n"
+    content += qa_output + "\n\n"
+    
+    content += "## Technical Synthesis\n\n"
+    content += synthesis_output + "\n\n"
+    
+    content += "## Executive Summary & Roadmap\n\n"
+    content += pm_output + "\n"
+    
+    return content
+
+
+def generate_pdf_bytes(html_content):
+    """Generate PDF in memory (returns bytes for download).
+    
+    Args:
+        html_content: HTML content string to convert
+        
+    Returns:
+        bytes: PDF file content as bytes, or None if generation failed
+    """
+    try:
+        from weasyprint import HTML
+        pdf_buffer = BytesIO()
+        HTML(string=html_content).write_pdf(pdf_buffer)
+        return pdf_buffer.getvalue()
+    except ImportError:
+        return None
+    except Exception:
+        return None
 
 
 def save_text_output(output_file, user_input, ba_output, architect_output, qa_output, synthesis_output, pm_output):

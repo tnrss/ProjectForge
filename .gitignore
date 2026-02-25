@@ -53,6 +53,14 @@ output_*.pdf
 .pytest_cache/
 .coverage
 htmlcov/
+test_cli.py
 
 # CrewAI
 .crewai/
+
+# Streamlit
+.streamlit/
+
+# Migration/Documentation (temporary files)
+MIGRATION_COMPLETE.md
+STREAMLIT_MIGRATION_PLAN.md

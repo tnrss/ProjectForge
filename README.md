@@ -66,14 +66,16 @@ ProjectForge uses a sequential 5-agent pipeline:
 ### Project Structure
 
 ```
-ABA Project/
+ProjectForge/
 ├── .env                          # API keys and configuration
-├── main.py                       # Entry point and orchestration
+├── main.py                       # CLI entry point
+├── app.py                        # Streamlit web UI entry point
 ├── requirements.txt              # Python dependencies
 ├── README.md                     # This file
 │
 ├── project_forge/                # Main package
 │   ├── __init__.py
+│   ├── core.py                   # Core workflow engine (shared by CLI & Web)
 │   │
 │   ├── agents/                   # Agent definitions
 │   │   ├── __init__.py
@@ -90,7 +92,7 @@ ABA Project/
 │   │
 │   └── templates.py              # HTML/CSS template generator
 │
-└── output_YYYYMMDD_HHMMSS.*     # Generated reports
+└── output_YYYYMMDD_HHMMSS.*     # Generated reports (CLI mode)
 ```
 
 ## Quick Start
@@ -105,13 +107,16 @@ ABA Project/
 
 1. **Clone the repository**
    ```bash
-   cd "/Users/jdunlap/code/ABA Project"
+   git clone https://github.com/tnrss/ProjectForge.git
+   cd ProjectForge
    ```
 
 2. **Create and activate virtual environment**
    ```bash
    python3 -m venv .venv
    source .venv/bin/activate  # On macOS/Linux
+   # OR on Windows:
+   # .venv\Scripts\activate
    ```
 
 3. **Install Python dependencies**
@@ -134,9 +139,46 @@ ABA Project/
 
 ### Usage
 
+ProjectForge provides **two interfaces**: a command-line tool for developers and a web UI for teams.
+
+#### Web UI (Recommended for Teams)
+
+Launch the Streamlit web interface:
+```bash
+streamlit run app.py
+```
+
+This opens an interactive browser interface where you can:
+- Enter project descriptions in a rich text area
+- Configure LLM model and API key in the sidebar
+- View agent outputs in expandable sections with real-time results
+- Download TXT, HTML, and PDF outputs instantly
+
+**Default URL:** http://localhost:8501
+
+**Features:**
+- Clean, professional interface with Font Awesome icons
+- Dark mode optimized for readability
+- Responsive design with proper overflow handling
+- Session state management for persistent results
+- Error handling with partial result recovery
+
+**Note:** The web UI runs in automated mode (no human-in-the-loop feedback). For iterative agent feedback, use the CLI with interactive mode.
+
+#### Command-Line Interface (CLI)
+
+For automation, scripting, or local development:
+
 **Interactive Mode:**
 ```bash
 python main.py
+```
+
+**Iterative Mode with Human-in-the-Loop:**
+```bash
+python main.py
+> [Enter project description]
+> y  # Enable feedback between agents
 ```
 
 **Pipe Input Mode:**
@@ -255,20 +297,80 @@ QA Output (3000 tokens) ────────┘
 
 ## Module Reference
 
+### `app.py`
+**Purpose:** Streamlit web UI entry point
+
+**Key Features:**
+- Session state management for persistent results
+- Real-time workflow execution with spinner
+- Expandable sections for agent outputs
+- Download buttons for all output formats (TXT, HTML, PDF)
+- Custom CSS with Font Awesome icons
+- Dark mode optimized styling
+- Responsive design with overflow protection
+
+**Main Functions:**
+- `initialize_session_state()` - Sets up Streamlit session variables
+- `run_analysis()` - Executes workflow and stores results
+- `display_results()` - Renders agent outputs and download buttons
+- `main()` - Application entry point
+
+---
+
 ### `main.py`
-**Purpose:** Orchestration layer and entry point
+**Purpose:** CLI orchestration layer and entry point
 
 **Key Functions:**
-- `get_user_input()` - CLI prompt for project description
+- `get_user_input()` - CLI prompt for project description + interactive mode toggle
 - `main()` - Workflow execution with error handling
 
 **Flow:**
 1. Load environment variables
-2. Initialize LLM from config
-3. Create 5 agents and 5 tasks
-4. Execute CrewAI workflow
-5. Extract outputs by role (safe)
-6. Save to text/HTML/PDF
+2. Get user input (project description + interactive mode preference)
+3. Execute workflow via `run_analysis_workflow()`
+4. Extract outputs and save to files
+5. Display results in terminal
+
+---
+
+### `project_forge/core.py`
+**Purpose:** Shared workflow engine for CLI and Web UI
+
+**Function:**
+```python
+run_analysis_workflow(
+    user_input: str,
+    llm_model: str,
+    api_key: str,
+    interactive_mode: bool = False
+) -> dict
+```
+
+**Returns:**
+```python
+{
+    'success': bool,
+    'outputs': {
+        'intake': str,
+        'architect': str,
+        'quality': str,
+        'synthesis': str,
+        'manager': str
+    },
+    'html_content': str,
+    'timestamp': str,
+    'error': Optional[str],
+    'raw_result': Optional[str]
+}
+```
+
+**Features:**
+- Centralizes workflow logic for code reuse
+- Handles LLM initialization
+- Creates agents and tasks
+- Executes CrewAI workflow
+- Safe output extraction with partial failure recovery
+- HTML content generation
 
 ---
 
@@ -290,12 +392,17 @@ create_agents(llm) -> tuple[Agent, Agent, Agent, Agent, Agent]
 ---
 
 ### `project_forge/tasks/workflows.py`
-**Purpose:** Task creation with context passing
+**Purpose:** Task creation with context passing and optional human-in-the-loop
 
 **Function:**
 ```python
-create_tasks(user_input, agents) -> list[Task]
+create_tasks(user_input, agents, interactive_mode=False) -> list[Task]
 ```
+
+**Parameters:**
+- `user_input` - Project description
+- `agents` - Tuple of 5 agents
+- `interactive_mode` - Enable human feedback between agents (CLI only)
 
 **Task Dependencies:**
 ```
@@ -326,14 +433,24 @@ convert_markdown_to_html(text: str) -> str
 Uses `markdown` library with `tables` and `fenced_code` extensions.
 
 ```python
+generate_text_content(timestamp, user_input, ba, arch, qa, synth, pm) -> str
+```
+Generates text output in memory (returns string for web UI downloads).
+
+```python
+generate_pdf_bytes(html_content) -> bytes
+```
+Converts HTML to PDF bytes using BytesIO (for Streamlit downloads).
+
+```python
 save_text_output(file, user_input, ba, arch, qa, synth, pm) -> None
 ```
-Writes plain text with section headers.
+Writes plain text with section headers to file.
 
 ```python
 save_html_output(file, html_content) -> None
 ```
-Writes complete HTML document.
+Writes complete HTML document to file.
 
 ```python
 save_pdf_output(file, html_content) -> bool
@@ -343,6 +460,7 @@ Converts HTML → PDF using WeasyPrint. Returns `True` on success.
 **Dependencies:**
 - `markdown` - Production-grade Markdown parser
 - `weasyprint` - HTML to PDF converter (requires Pango/Cairo)
+- `io.BytesIO` - In-memory binary streams for web downloads
 
 ---
 
@@ -402,12 +520,31 @@ generate_html_template(
 
 ## Testing
 
-### Manual Test
+### Web UI Testing
+
+```bash
+# Launch web interface
+streamlit run app.py
+
+# Test in browser
+# 1. Navigate to http://localhost:8501
+# 2. Enter a project description
+# 3. Click "Run Analysis"
+# 4. Verify agent outputs display
+# 5. Test download buttons (TXT, HTML, PDF)
+```
+
+### CLI Testing
 
 ```bash
 # Test with default input
 python main.py
 > [Press Enter to use default]
+
+# Test interactive mode
+python main.py
+> test project
+> y  # Enable iterative mode
 
 # Verify outputs exist
 ls -lh output_*.{txt,html,pdf}
@@ -491,12 +628,105 @@ pip install -r requirements.txt
 - Without synthesis: ~8,000-12,000 tokens
 - With synthesis: ~5,000-7,000 tokens (40% reduction)
 
+**Web UI Notes:**
+- Results persist in session state during browser session
+- Multiple analyses can be run without restarting server
+- Downloads generate on-demand (no file storage)
+
+## Deployment
+
+### Local Development
+```bash
+# CLI
+python main.py
+
+# Web UI
+streamlit run app.py
+```
+
+### Streamlit Cloud (Recommended)
+
+1. **Push to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Add Streamlit web UI"
+   git push origin main
+   ```
+
+2. **Deploy on Streamlit Cloud:**
+   - Visit https://share.streamlit.io
+   - Connect your GitHub repository
+   - Set main file path: `app.py`
+   - Add secrets (Settings → Secrets):
+     ```toml
+     GOOGLE_API_KEY = "your_api_key_here"
+     LLM_MODEL = "gemini/gemini-2.5-flash"
+     ```
+   - Click "Deploy"
+
+3. **Access your app:**
+   - URL: `https://[your-app-name].streamlit.app`
+
+### Docker Deployment
+
+Create `Dockerfile`:
+```dockerfile
+FROM python:3.11-slim
+
+# Install system dependencies for WeasyPrint
+RUN apt-get update && apt-get install -y \
+    libpango-1.0-0 \
+    libpangoft2-1.0-0 \
+    libgdk-pixbuf2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+```
+
+**Build and run:**
+```bash
+docker build -t projectforge .
+docker run -p 8501:8501 -e GOOGLE_API_KEY=your_key projectforge
+```
+
+### Cloud Run / AWS / Azure
+
+The Streamlit app is stateless and works with any container platform:
+- **Google Cloud Run**: Deploy Docker container
+- **AWS ECS/Fargate**: Use Docker image
+- **Azure Container Instances**: Deploy with Azure CLI
+
+**Environment Variables Required:**
+- `GOOGLE_API_KEY`
+- `LLM_MODEL` (optional)
+
 ## Security
 
 - API keys stored in `.env` (excluded from git via `.gitignore`)
 - No user data stored or transmitted beyond LLM API calls
-- Output files saved locally only
+- Output files saved locally (CLI) or generated in-memory (Web UI)
 - HTTPS for all API communications
+- Session state isolated per browser session in web UI
+- No database or persistent storage required
+
+## Roadmap
+
+- [ ] Support for additional LLM providers (OpenAI, Anthropic)
+- [ ] Export to Markdown format
+- [ ] Project templates for common use cases
+- [ ] Multi-language support
+- [ ] Real-time progress tracking in web UI
+- [ ] User authentication for team deployments
+- [ ] Analysis history and version control
 
 ## License
 
@@ -510,7 +740,20 @@ MIT License - See LICENSE file for details
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+**Development Guidelines:**
+- Follow PEP 8 style guide
+- Add docstrings to all functions
+- Test both CLI and Web UI before submitting
+- Update README if adding new features
+- Keep commits atomic and well-described
+
 ## Acknowledgments
+
+- **CrewAI** - Multi-agent orchestration framework
+- **Streamlit** - Web UI framework
+- **Google Gemini** - LLM provider
+- **WeasyPrint** - PDF generation
+- **Font Awesome** - Icon library
 
 - **CrewAI** - Multi-agent orchestration framework
 - **Google Gemini** - LLM provider
