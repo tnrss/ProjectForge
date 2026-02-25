@@ -2,10 +2,10 @@
 # AI-Powered Business Analysis Tool
 
 # Core Framework
-crewai>=0.70.0
+crewai[google-genai]>=0.70.0
 
-# LLM Integration
-google-generativeai>=0.8.0
+# LLM Integration (included via crewai[google-genai] extra)
+# google-generativeai>=0.8.0
 
 # Environment Configuration
 python-dotenv>=1.0.0
